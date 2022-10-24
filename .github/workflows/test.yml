@@ -1,0 +1,45 @@
+name: Tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_call:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      os:
+        - ubuntu-latest
+        - windows-latest
+        - macos-latest
+      matrix:
+        rust-channel: [ stable, nightly ]
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: 'ZNotify/rs-sdk'
+
+      - uses: ZNotify/test-action@master
+
+      - name: Rust Setup
+        id: setup
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ matrix.rust-channel }}
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-${{ steps.setup.outputs.cachekey }}
+
+      - name: Run Tests
+        run: cargo test --all --verbose
