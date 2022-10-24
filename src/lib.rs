@@ -6,6 +6,6 @@ pub mod send;
 
 mod constant;
 
-pub use client::Client;
-pub use entity::{Message, MessageOptions};
-pub use send::send;
+pub use self::client::Client;
+pub use self::entity::{Message, MessageOptions};
+pub use self::send::send;

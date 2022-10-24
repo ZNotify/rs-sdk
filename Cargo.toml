@@ -1,7 +1,11 @@
 [package]
 name = "notify-rs-sdk"
-version = "0.1.0"
+version = "0.0.1"
 edition = "2021"
+license = "Apache-2.0"
+license-file = "LICENSE"
+homepage = "https://github.com/ZNotify/rs-sdk"
+description = "Notify SDK for Rust"
 
 [dependencies]
 reqwest = { version = "0.11", features = ["json"] }
@@ -12,3 +16,7 @@ uuid = { version = "0.8", features = ["serde", "v4"] }
 
 [profile.release]
 lto = true
+opt-level = 3
+
+[profile.dev]
+opt-level = 0
