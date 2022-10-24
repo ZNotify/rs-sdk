@@ -1,4 +1,4 @@
-use notify_rs_sdk::{Client, MessageOptions};
+use znotify::{Client, MessageOptions};
 
 const TEST_SERVER: &str = "http://localhost:14444";
 
