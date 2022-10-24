@@ -9,7 +9,6 @@ on:
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
     strategy:
       os:
         - ubuntu-latest
@@ -17,6 +16,7 @@ jobs:
         - macos-latest
       matrix:
         rust-channel: [ stable, nightly ]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v3
