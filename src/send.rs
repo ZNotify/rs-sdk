@@ -3,12 +3,13 @@ use crate::Client;
 use std::error::Error;
 
 pub async fn send(
+    user_id: String,
     content: String,
     title: Option<String>,
     long: Option<String>,
 ) -> Result<Message, Box<dyn Error>> {
-    let client = Client::create("user_id".to_string(), None).await.unwrap();
-    client
+    Client::create(user_id, None)
+        .await?
         .send(MessageOptions {
             content,
             title,
