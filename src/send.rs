@@ -1,6 +1,7 @@
 use crate::entity::{Message, MessageOptions};
 use crate::Client;
 use std::error::Error;
+use crate::constant::ENDPOINT;
 
 pub async fn send(
     user_id: String,
@@ -8,7 +9,7 @@ pub async fn send(
     title: Option<String>,
     long: Option<String>,
 ) -> Result<Message, Box<dyn Error>> {
-    Client::create(user_id, None)
+    Client::create(user_id, Some(String::from(ENDPOINT)))
         .await?
         .send(MessageOptions {
             content,

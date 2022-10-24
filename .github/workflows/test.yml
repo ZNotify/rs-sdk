@@ -42,4 +42,4 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-${{ steps.setup.outputs.cachekey }}
 
       - name: Run Tests
-        run: cargo test --all --verbose
+        run: cargo test --features=mock --all --verbose
