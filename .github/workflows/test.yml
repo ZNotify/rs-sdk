@@ -10,12 +10,12 @@ on:
 jobs:
   test:
     strategy:
-      os:
-        - ubuntu-latest
-        - windows-latest
-        - macos-latest
       matrix:
         rust-channel: [ stable, nightly ]
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
     runs-on: ${{ matrix.os }}
 
     steps:
