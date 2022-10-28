@@ -42,4 +42,6 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-${{ steps.setup.outputs.cachekey }}
 
       - name: Run Tests
-        run: cargo test --cfg mock --all --verbose
+        run: cargo test --all --verbose
+        env:
+          RUSTFLAGS: '--cfg mock'
