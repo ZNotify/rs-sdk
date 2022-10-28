@@ -1,6 +1,6 @@
-#[cfg(not(feature = "mock"))]
+#[cfg(not(mock))]
 pub const ENDPOINT: &str = "https://push.learningman.top";
 
 
-#[cfg(feature = "mock")]
+#[cfg(mock)]
 pub const ENDPOINT: &str = "http://localhost:14444";
