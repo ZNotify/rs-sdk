@@ -1,6 +1,6 @@
 [package]
 name = "znotify"
-version = "0.0.3"
+version = "0.0.4"
 edition = "2021"
 license = "Apache-2.0"
 homepage = "https://github.com/ZNotify/rs-sdk"
@@ -8,7 +8,7 @@ repository = "https://github.com/ZNotify/rs-sdk"
 description = "Notify SDK for Rust"
 
 [dependencies]
-reqwest = { version = "0.11", features = ["json"] }
+reqwest = { version = "0.11", features = ["json", "rustls"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 uuid = { version = "1.2.1", features = ["serde", "v4"] }
