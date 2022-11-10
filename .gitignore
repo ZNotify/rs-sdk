@@ -2,10 +2,8 @@
 /Cargo.lock
 debug/
 target/
-Cargo.lock
 **/*.rs.bk
 .idea
 *.iml
 out
 gen
-.idea
