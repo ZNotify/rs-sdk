@@ -17,7 +17,7 @@ struct ClientResponse<T> {
 #[derive(Debug)]
 pub enum ChannelType {
     WebSocket,
-    FCM
+    FCM,
 }
 
 impl ChannelType {
@@ -40,14 +40,16 @@ impl Client {
         Self {
             endpoint: endpoint.unwrap_or_else(|| String::from(ENDPOINT)),
             user_id,
-            client: ReqClient::new(),
+            client: ReqClient::builder()
+                .user_agent(format!("znotify-rs-sdk/{}", env!("CARGO_PKG_VERSION")))
+                .build().unwrap(),
         }
     }
 
     pub async fn create(user_id: String, endpoint: Option<String>) -> Result<Self, Box<dyn Error>> {
         let client = Self::new(user_id, endpoint);
         let ret = client.check().await;
-        if ret.is_ok(){
+        if ret.is_ok() {
             Ok(client)
         } else {
             Err(ret.err().unwrap())
@@ -73,6 +75,7 @@ impl Client {
         let content = option.content;
         let title = option.title;
         let long = option.long;
+        let priority = option.priority.unwrap_or_default();
 
         if content.is_empty() {
             Err("Content is required")?
@@ -85,6 +88,7 @@ impl Client {
         );
         data.insert("content", content);
         data.insert("long", long.unwrap_or_else(String::new));
+        data.insert("priority", priority.to_string());
 
         let resp = self
             .client

@@ -1,4 +1,4 @@
-use crate::entity::{Message, MessageOptions};
+use crate::entity::{Message, MessageOptions, Priority};
 use crate::Client;
 use std::error::Error;
 use crate::constant::ENDPOINT;
@@ -15,6 +15,7 @@ pub async fn send(
             content,
             title,
             long,
+            priority: Some(Priority::Normal),
         })
         .await
 }

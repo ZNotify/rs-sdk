@@ -24,6 +24,7 @@ async fn client_send() {
             content: content.clone(),
             title: title.clone(),
             long: long.clone(),
+            priority: None,
         })
         .await;
     assert!(message.is_ok());
@@ -44,6 +45,7 @@ async fn client_send_failed() {
             content: content.clone(),
             title: title.clone(),
             long: long.clone(),
+            priority: None,
         })
         .await;
     assert!(message.is_err());
