@@ -12,5 +12,5 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-znotify = "0.0.2"
+znotify = "0.1.1"
 ```
