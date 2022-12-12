@@ -1,7 +1,7 @@
+use crate::constant::ENDPOINT;
 use crate::entity::{Message, MessageOptions, Priority};
 use crate::Client;
 use std::error::Error;
-use crate::constant::ENDPOINT;
 
 pub async fn send(
     user_id: String,

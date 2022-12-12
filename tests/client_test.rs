@@ -4,7 +4,11 @@ use znotify::{Client, MessageOptions};
 async fn test_client_create_err() {
     let client = Client::create("error".to_string(), None).await;
     assert!(client.is_err());
-    assert!(client.err().unwrap().to_string().contains("User ID not valid"));
+    assert!(client
+        .err()
+        .unwrap()
+        .to_string()
+        .contains("User ID not valid"));
 }
 
 #[tokio::test]
@@ -49,5 +53,9 @@ async fn client_send_failed() {
         })
         .await;
     assert!(message.is_err());
-    assert!(message.err().unwrap().to_string().contains("Content is required"));
+    assert!(message
+        .err()
+        .unwrap()
+        .to_string()
+        .contains("Content is required"));
 }

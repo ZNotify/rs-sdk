@@ -24,7 +24,7 @@ impl ChannelType {
     fn as_str(&self) -> &'static str {
         match self {
             ChannelType::WebSocket => "websocket",
-            ChannelType::FCM => "fcm"
+            ChannelType::FCM => "fcm",
         }
     }
 }
@@ -42,7 +42,8 @@ impl Client {
             user_id,
             client: ReqClient::builder()
                 .user_agent(format!("znotify-rs-sdk/{}", env!("CARGO_PKG_VERSION")))
-                .build().unwrap(),
+                .build()
+                .unwrap(),
         }
     }
 

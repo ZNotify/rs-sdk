@@ -1,4 +1,4 @@
-use znotify::{send};
+use znotify::send;
 
 #[tokio::test]
 async fn client_send() {
@@ -11,7 +11,7 @@ async fn client_send() {
         title.clone(),
         long.clone(),
     )
-        .await;
+    .await;
     assert!(message.is_ok());
     let message = message.unwrap();
     assert_eq!(message.content, content);
