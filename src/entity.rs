@@ -1,20 +1,58 @@
+use std::fmt;
 use serde::{Deserialize, Serialize};
 use std::time::Duration;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub enum Priority {
+    #[serde(rename = "high")]
     High,
+
+    #[serde(rename = "normal")]
     Normal,
+
+    #[serde(rename = "low")]
     Low,
 }
 
-impl Priority {
-    pub fn to_string(&self) -> String {
+impl ToString for Priority {
+    fn to_string(&self) -> String {
         match self {
-            Priority::High => "high".to_string(),
-            Priority::Normal => "normal".to_string(),
-            Priority::Low => "low".to_string(),
+            Priority::High => "high",
+            Priority::Normal => "normal",
+            Priority::Low => "low",
         }
+            .to_string()
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, Eq, PartialEq)]
+pub enum Channel {
+    #[serde(rename = "WebSocket")]
+    WebSocket,
+
+    #[serde(rename = "FCM")]
+    FCM,
+
+    #[serde(rename = "WebPush")]
+    WebPush,
+
+    #[serde(rename = "WNS")]
+    WNS,
+
+    #[serde(rename = "Telegram")]
+    Telegram,
+}
+
+impl ToString for Channel {
+    fn to_string(&self) -> String {
+        match self {
+            Channel::WebSocket => "WebSocket",
+            Channel::FCM => "FCM",
+            Channel::WebPush => "WebPush",
+            Channel::WNS => "WNS",
+            Channel::Telegram => "Telegram",
+        }
+            .to_string()
     }
 }
 
@@ -30,8 +68,8 @@ pub struct Message {
     pub title: String,
     pub content: String,
     pub long: String,
-    pub user_id: String,
     pub created_at: String,
+    pub priority: Priority,
 }
 
 #[derive(Debug)]
@@ -48,7 +86,13 @@ impl Default for MessageOptions {
             content: String::new(),
             title: None,
             long: None,
-            priority: Some(Priority::Normal),
+            priority: Some(Priority::default()),
         }
     }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub(crate) struct ClientResponse<T> {
+    pub(crate) code: i32,
+    pub(crate) body: T,
 }

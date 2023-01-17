@@ -6,28 +6,8 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::constant::ENDPOINT;
-use crate::entity::{Message, MessageOptions};
+use crate::entity::{Channel, ClientResponse, Message, MessageOptions};
 
-#[derive(Debug, Serialize, Deserialize)]
-struct ClientResponse<T> {
-    code: i32,
-    body: T,
-}
-
-#[derive(Debug)]
-pub enum ChannelType {
-    WebSocket,
-    FCM,
-}
-
-impl ChannelType {
-    fn as_str(&self) -> &'static str {
-        match self {
-            ChannelType::WebSocket => "websocket",
-            ChannelType::FCM => "fcm",
-        }
-    }
-}
 
 pub struct Client {
     endpoint: String,
@@ -47,8 +27,8 @@ impl Client {
         }
     }
 
-    pub async fn create(user_id: String, endpoint: Option<String>) -> Result<Self, Box<dyn Error>> {
-        let client = Self::new(user_id, endpoint);
+    pub async fn create(user_secret: String, endpoint: Option<String>) -> Result<Self, Box<dyn Error>> {
+        let client = Self::new(user_secret, endpoint);
         let ret = client.check().await;
         if ret.is_ok() {
             Ok(client)
@@ -61,13 +41,13 @@ impl Client {
         let resp = self
             .client
             .get(format!("{}/check", self.endpoint))
-            .query(&[("user_id", self.user_id.clone())])
+            .query(&[("user_secret", self.user_id.clone())])
             .send()
             .await?;
 
         let resp: ClientResponse<bool> = resp.json().await?;
         if !resp.body {
-            Err("User ID not valid")?
+            Err("User secret not valid")?
         }
         Ok(())
     }
@@ -107,33 +87,44 @@ impl Client {
         }
     }
 
-    pub async fn delete(&self, id: String) -> Result<(), Box<dyn Error>> {
+    pub async fn delete_message(&self, id: String) -> Result<bool, Box<dyn Error>> {
         let client = ReqClient::new();
-        client
-            .delete(format!("{}/{}/{}", self.endpoint, self.user_id, id))
+        let resp = client
+            .delete(format!("{}/{}/message/{}", self.endpoint, self.user_id, id))
             .send()
             .await?;
-        Ok(())
+
+        if resp.status().is_success() {
+            let resp: ClientResponse<bool> = resp.json().await?;
+            Ok(resp.body)
+        } else {
+            let resp: ClientResponse<String> = resp.json().await?;
+            Err(resp.body)?
+        }
     }
 
-    pub async fn register(
+    pub async fn create_device(
         &self,
-        channel: ChannelType,
-        token: String,
+        channel: Channel,
         device_id: String,
-    ) -> Result<(), Box<dyn Error>> {
+        token: Option<String>,
+        device_name: Option<String>,
+        device_meta: Option<String>,
+    ) -> Result<bool, Box<dyn Error>> {
         if !Uuid::parse_str(&device_id).is_ok() {
             Err("Device ID not valid, should be a UUID")?
         }
 
         let mut data = HashMap::new();
         data.insert("channel", format!("{:?}", channel));
-        data.insert("token", token);
+        data.insert("token", token.unwrap_or_default());
+        data.insert("device_name", device_name.unwrap_or_default());
+        data.insert("device_meta", device_meta.unwrap_or_default());
 
         let resp = self
             .client
             .put(format!(
-                "{}/{}/token/{}",
+                "{}/{}/device/{}",
                 self.endpoint, self.user_id, device_id
             ))
             .form(&data)
@@ -141,7 +132,8 @@ impl Client {
             .await?;
 
         if resp.status().is_success() {
-            Ok(())
+            let resp: ClientResponse<bool> = resp.json().await?;
+            Ok(resp.body)
         } else {
             let resp: ClientResponse<String> = resp.json().await?;
             Err(resp.body)?
