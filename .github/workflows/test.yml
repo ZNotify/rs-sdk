@@ -11,7 +11,6 @@ jobs:
   test:
     strategy:
       matrix:
-        rust-channel: [ stable, nightly ]
         os:
           - ubuntu-latest
           - windows-latest
@@ -29,7 +28,7 @@ jobs:
         id: setup
         uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: ${{ matrix.rust-channel }}
+          toolchain: stable
 
       - uses: actions/cache@v3
         with:
