@@ -6,7 +6,12 @@ on:
   pull_request:
     branches: [ master ]
   workflow_call:
-
+    inputs:
+      require-current-artifact:
+        description: Require the server artifact from the current workflow run
+        required: false
+        type: boolean
+        default: false
 jobs:
   test:
     strategy:
@@ -22,7 +27,9 @@ jobs:
         with:
           repository: 'ZNotify/rs-sdk'
 
-      - uses: ZNotify/test-action@master
+      - uses: ZNotify/test-server-action@master
+        with:
+          require-current-artifact: ${{ inputs.require-current-artifact || false }}
 
       - name: Rust Setup
         id: setup
@@ -39,3 +46,4 @@ jobs:
         run: cargo test --all --verbose
         env:
           RUSTFLAGS: '--cfg mock'
+
